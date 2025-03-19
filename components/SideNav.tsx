@@ -353,7 +353,7 @@ function EditNavItem({
       parentId,
       index,
     }),
-    collect: (monitor) => ({
+    collect: () => ({
       // isDragging: monitor.isDragging(),
     }),
   });
