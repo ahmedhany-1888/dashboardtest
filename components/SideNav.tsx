@@ -21,6 +21,7 @@ import ChevronTopIcon from "@mui/icons-material/ExpandLess";
 import { DndProvider, useDrag, useDrop } from "react-dnd";
 import { HTML5Backend } from 'react-dnd-html5-backend';
 import { Identifier } from "dnd-core";
+import { JSX } from "@emotion/react/jsx-runtime";
 
 // Data structure for nav items
 export interface NavItemType {
