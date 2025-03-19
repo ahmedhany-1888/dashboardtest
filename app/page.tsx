@@ -16,7 +16,6 @@ import {
   useMediaQuery,
   Theme,
   InputBase,
-  Badge,
 } from "@mui/material";
 import { styled, useTheme } from "@mui/material/styles";
 
@@ -25,7 +24,6 @@ import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
 import LocationOnIcon from "@mui/icons-material/LocationOn";
 import CalendarTodayIcon from "@mui/icons-material/CalendarToday";
 import MenuIcon from "@mui/icons-material/Menu";
-import LogoutIcon from "@mui/icons-material/Logout";
 import SearchIcon from "@mui/icons-material/Search";
 
 import SideNav from "@/components/SideNav";
@@ -68,16 +66,16 @@ const PageContainer = styled(Box)(({ theme }) => ({
 }));
 
 // ===== Desktop Header (Green Box) =====
-const DesktopHeaderContainer = styled(Box)(({ theme }) => ({
-  display: "flex",
-  alignItems: "center",
-  justifyContent: "space-between",
-  backgroundColor: "#48A74C",
-  color: "#fff",
-  borderRadius: theme.spacing(1),
-  padding: theme.spacing(2),
-  marginBottom: theme.spacing(2),
-}));
+// const DesktopHeaderContainer = styled(Box)(({ theme }) => ({
+//   display: "flex",
+//   alignItems: "center",
+//   justifyContent: "space-between",
+//   backgroundColor: "#48A74C",
+//   color: "#fff",
+//   borderRadius: theme.spacing(1),
+//   padding: theme.spacing(2),
+//   marginBottom: theme.spacing(2),
+// }));
 
 // ===== Mobile Header Container =====
 const MobileHeaderContainer = styled(Box)(({ theme }) => ({
@@ -142,41 +140,41 @@ const StyledInputBase = styled(InputBase)({
 });
 
 // ===== Icon + label stack for desktop icons =====
-const IconLabelStack = styled(Box)(({ theme }) => ({
-  display: "flex",
-  flexDirection: "column",
-  alignItems: "center",
-  cursor: "pointer",
-  marginLeft: theme.spacing(2),
-  marginRight: theme.spacing(2),
-}));
+// const IconLabelStack = styled(Box)(({ theme }) => ({
+//   display: "flex",
+//   flexDirection: "column",
+//   alignItems: "center",
+//   cursor: "pointer",
+//   marginLeft: theme.spacing(2),
+//   marginRight: theme.spacing(2),
+// }));
 
-const VerticalDivider = styled(Box)(({ theme }) => ({
-  borderLeft: "1px solid #D6D6D699",
-  height: "40px",
-  marginLeft: theme.spacing(1),
-  marginRight: theme.spacing(1),
-}));
+// const VerticalDivider = styled(Box)(({ theme }) => ({
+//   borderLeft: "1px solid #D6D6D699",
+//   height: "40px",
+//   marginLeft: theme.spacing(1),
+//   marginRight: theme.spacing(1),
+// }));
 
-const iconStyle = {
-  width: 28,
-  height: 28,
-  color: "#999",
-};
+// const iconStyle = {
+//   width: 28,
+//   height: 28,
+//   color: "#999",
+// };
 
-const labelStyle = (theme: Theme) => ({
-  fontFamily: "DM Sans, sans-serif",
-  fontSize: "14px",
-  marginTop: 4,
-  fontWeight: 100,
-  color: "#E6E6E6",
-  [theme.breakpoints.down("xs")]: {
-    display: "none",
-  },
-});
+// const labelStyle = (theme: Theme) => ({
+//   fontFamily: "DM Sans, sans-serif",
+//   fontSize: "14px",
+//   marginTop: 4,
+//   fontWeight: 100,
+//   color: "#E6E6E6",
+//   [theme.breakpoints.down("xs")]: {
+//     display: "none",
+//   },
+// });
 
 // ===== Favorite Icon Container (Job Cards) =====
-const FavoriteIconContainer = styled(IconButton)(({ theme }) => ({
+const FavoriteIconContainer = styled(IconButton)(({  }) => ({
   backgroundColor: "#FFF",
   border: "1px solid #ccc",
   borderRadius: "50%",
@@ -189,7 +187,7 @@ const FavoriteIconContainer = styled(IconButton)(({ theme }) => ({
 
 // ===== HomePage Component =====
 export default function HomePage() {
-  const theme = useTheme();
+  // const theme = useTheme();
   const isMobile = useMediaQuery((theme: Theme) => theme.breakpoints.down("sm"));
 
   // State for alert switch and sorting

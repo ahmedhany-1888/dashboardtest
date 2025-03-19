@@ -134,7 +134,7 @@ const IconLabelStack = styled(Box)(({ theme }) => ({
 }));
 
 // Vertical divider styling
-const VerticalDivider = styled(Box)(({ theme }) => ({
+const VerticalDivider = styled(Box)(({  }) => ({
   borderLeft: "1px solid #D6D6D699",
   height: "40px",
   marginRight: "10px",
@@ -159,7 +159,7 @@ const labelStyle = (theme: Theme) => ({
   },
 });
 
-const AppBar: FC<AppBarProps> = ({ onMenuClick }) => {
+const AppBar: FC<AppBarProps> = ({  }) => {
   const theme = useTheme();
   const isMobile = useMediaQuery((theme: Theme) => theme.breakpoints.down("sm"));
 
