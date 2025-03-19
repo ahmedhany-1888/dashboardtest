@@ -343,7 +343,9 @@ function EditNavItem({
   const opacity = item.visible === false ? 0.5 : 1;
   const backgroundColor = isTopLevel ? "#F5F5F5" : "transparent";
 
-  const [{ isDragging }, drag] = useDrag({
+  const [{ 
+    // isDragging 
+  }, drag] = useDrag({
     type: NAV_ITEM_TYPE,
     item: () => ({
       type: NAV_ITEM_TYPE,
@@ -352,7 +354,7 @@ function EditNavItem({
       index,
     }),
     collect: (monitor) => ({
-      isDragging: monitor.isDragging(),
+      // isDragging: monitor.isDragging(),
     }),
   });
 

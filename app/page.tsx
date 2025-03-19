@@ -17,7 +17,7 @@ import {
   Theme,
   InputBase,
 } from "@mui/material";
-import { styled, useTheme } from "@mui/material/styles";
+import { styled } from "@mui/material/styles";
 
 import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
 import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
