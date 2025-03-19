@@ -1,4 +1,5 @@
 "use client";
+
 import React, { useEffect, useState, useRef } from "react";
 import {
   Box,
@@ -19,7 +20,7 @@ import ChevronTopIcon from "@mui/icons-material/ExpandLess";
 
 // === react-dnd imports
 import { DndProvider, useDrag, useDrop } from "react-dnd";
-import { HTML5Backend } from 'react-dnd-html5-backend';
+import { HTML5Backend } from "react-dnd-html5-backend";
 import { Identifier } from "dnd-core";
 import { JSX } from "@emotion/react/jsx-runtime";
 
@@ -35,6 +36,7 @@ export interface NavItemType {
 // Drag item type constant
 const NAV_ITEM_TYPE = "NAV_ITEM";
 
+// Helper to reorder an array
 function reorder<T>(list: T[], fromIndex: number, toIndex: number): T[] {
   const result = [...list];
   const [removed] = result.splice(fromIndex, 1);
@@ -42,24 +44,21 @@ function reorder<T>(list: T[], fromIndex: number, toIndex: number): T[] {
   return result;
 }
 
-
+// Recursively reorder nav items within the same parent
 function reorderNavItems(
   items: NavItemType[],
   parentId: number | null,
   fromIndex: number,
   toIndex: number
 ): NavItemType[] {
-  // If parentId is null, reorder top-level
   if (parentId === null) {
     return reorder(items, fromIndex, toIndex);
   }
-  // Otherwise, find the parent and reorder in its .children
   return items.map((item) => {
     if (item.id === parentId && item.children) {
       const newChildren = reorder(item.children, fromIndex, toIndex);
       return { ...item, children: newChildren };
     }
-    // Recurse deeper if needed
     if (item.children && item.children.length > 0) {
       return {
         ...item,
@@ -70,27 +69,71 @@ function reorderNavItems(
   });
 }
 
-// Data passed around during dragging
+// Data passed during dragging
 interface DragItem {
-  type: string; 
+  type: string;
   id: number;
-  parentId: number | null; // The parent under which this item currently is
-  index: number; // The position in parent's array
+  parentId: number | null;
+  index: number;
 }
 
 export default function SideNav() {
-  const [navItems, setNavItems] = useState<NavItemType[]>([]);
-  const [editMode, setEditMode] = useState(false);
+  // Navigation items state; initial value will be loaded from localStorage or fallback to dummy data
+  const dummyNav: NavItemType[] = [
+    { id: 1, title: "Dashboard", target: "/" },
+    {
+      id: 2,
+      title: "Job Applications",
+      target: "/applications",
+      children: [
+        { id: 7, title: "John Doe", target: "/applications/john-doe" },
+        { id: 10, title: "James Bond", target: "/applications/james-bond" },
+        {
+          id: 20,
+          title: "Scarlett Johansson",
+          target: "/applications/scarlett-johansson",
+          visible: false,
+        },
+      ],
+    },
+    {
+      id: 3,
+      title: "Companies",
+      target: "/companies",
+      visible: false,
+      children: [
+        { id: 8, title: "Tanqeeb", target: "/companies/1" },
+        { id: 9, title: "Daftra", target: "/companies/2" },
+        { id: 11, title: "TBD", target: "/companies/14" },
+      ],
+    },
+    {
+      id: 4,
+      title: "Qualifications",
+      target: "/qualifications",
+      children: [
+        { id: 14, title: "Q1", target: "/q1" },
+        { id: 15, title: "Q2", target: "/q2" },
+      ],
+    },
+    { id: 5, title: "About", target: "/about" },
+    { id: 6, title: "Contact", target: "/contact" },
+  ];
 
-  // Track which items are expanded in view mode
+  const [navItems, setNavItems] = useState<NavItemType[]>(dummyNav);
+  const [editMode, setEditMode] = useState(false);
   const [expandedIds, setExpandedIds] = useState<number[]>([]);
 
+  // On mount, load navigation from localStorage if available
   useEffect(() => {
-    // Fetch or load nav items from server
-    fetch("http://localhost:8081/nav")
-      .then((res) => res.json())
-      .then((data) => setNavItems(data))
-      .catch((err) => console.error("Error fetching nav:", err));
+    const storedNav = localStorage.getItem("navItems");
+    if (storedNav) {
+      try {
+        setNavItems(JSON.parse(storedNav));
+      } catch (err) {
+        console.error("Error parsing stored nav data", err);
+      }
+    }
   }, []);
 
   // === Edit Mode Handlers ===
@@ -99,29 +142,24 @@ export default function SideNav() {
   };
 
   const handleDiscardChanges = () => {
-    // Re-fetch or revert to original nav items
-    fetch("http://localhost:8081/nav")
-      .then((res) => res.json())
-      .then((data) => setNavItems(data))
-      .catch((err) => console.error("Error fetching nav:", err));
+    // Reload nav items from localStorage or fallback to dummy data
+    const storedNav = localStorage.getItem("navItems");
+    if (storedNav) {
+      setNavItems(JSON.parse(storedNav));
+    } else {
+      setNavItems(dummyNav);
+    }
     setEditMode(false);
   };
 
   const handleSaveChanges = () => {
-    // Save navItems to server
-    fetch("http://localhost:8081/nav", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(navItems),
-    })
-      .then((res) => {
-        if (!res.ok) throw new Error("Failed to save changes");
-        setEditMode(false);
-      })
-      .catch((err) => console.error("Error saving nav:", err));
+    // Save the current navItems to localStorage.
+    // In a real backend scenario, you would POST this JSON to an API endpoint.
+    localStorage.setItem("navItems", JSON.stringify(navItems));
+    setEditMode(false);
   };
 
-  // === Visibility / Rename Handlers (used in edit mode) ===
+  // === Visibility / Rename Handlers (for edit mode) ===
   const handleToggleVisibility = (itemId: number, visible: boolean) => {
     setNavItems((prev) =>
       prev.map((item) =>
@@ -155,52 +193,35 @@ export default function SideNav() {
     );
   };
 
-  // === Expand/Collapse Logic for View Mode ===
+  // === Expand/Collapse Logic (for view mode) ===
   const handleToggleExpand = (itemId: number) => {
     setExpandedIds((prev) =>
-      prev.includes(itemId)
-        ? prev.filter((id) => id !== itemId)
-        : [...prev, itemId]
+      prev.includes(itemId) ? prev.filter((id) => id !== itemId) : [...prev, itemId]
     );
   };
 
   const isTopLevelItem = (item: NavItemType) =>
     !navItems.some((nav) => nav.children?.includes(item));
 
-  // === Move item among siblings
+  // === Move item among siblings (for drag-and-drop) ===
   const moveItem = (parentId: number | null, fromIndex: number, toIndex: number) => {
     setNavItems((prev) => {
       const newItems = reorderNavItems(prev, parentId, fromIndex, toIndex);
-
       return newItems;
     });
   };
 
   const renderViewModeItem = (item: NavItemType): JSX.Element | null => {
     if (item.visible === false) return null;
-
     const hasChildren = item.children && item.children.length > 0;
     const isExpanded = expandedIds.includes(item.id);
     const topLevel = isTopLevelItem(item);
     const backgroundColor = topLevel ? "#F5F5F5" : "transparent";
-
     return (
       <Box key={item.id}>
-        {/* Item row */}
-        <Box
-          sx={{
-            backgroundColor,
-            borderRadius: 1,
-            my: 0.5,
-          }}
-        >
+        <Box sx={{ backgroundColor, borderRadius: 1, my: 0.5 }}>
           <Box
-            sx={{
-              display: "flex",
-              alignItems: "center",
-              cursor: hasChildren ? "pointer" : "default",
-              px: 1,
-            }}
+            sx={{ display: "flex", alignItems: "center", cursor: hasChildren ? "pointer" : "default", px: 1 }}
             onClick={() => hasChildren && handleToggleExpand(item.id)}
           >
             <ListItemText primary={item.title} />
@@ -212,7 +233,6 @@ export default function SideNav() {
               ))}
           </Box>
         </Box>
-
         {hasChildren && isExpanded && (
           <Box sx={{ ml: 2 }}>
             {item.children?.map((child) => renderViewModeItem(child))}
@@ -234,7 +254,6 @@ export default function SideNav() {
         handleToggleVisibility={handleToggleVisibility}
         isTopLevel={isTopLevelItem(item) && parentId === null}
       >
-        {/* If children exist, render them indented */}
         {item.children && item.children.length > 0 && (
           <Box sx={{ ml: 3 }}>
             {renderEditModeTree(item.children, item.id)}
@@ -248,14 +267,7 @@ export default function SideNav() {
     <DndProvider backend={HTML5Backend}>
       <Box sx={{ width: 280, p: 2 }}>
         {/* Header */}
-        <Box
-          sx={{
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "space-between",
-            mb: 1,
-          }}
-        >
+        <Box sx={{ display: "flex", alignItems: "center", justifyContent: "space-between", mb: 1 }}>
           <Typography variant="h6" sx={{ fontWeight: 500 }}>
             Menu
           </Typography>
@@ -265,12 +277,12 @@ export default function SideNav() {
             </IconButton>
           ) : (
             <Box sx={{ display: "flex", alignItems: "center" }}>
-              {/* Discard (X) with red circle */}
+              {/* Discard changes */}
               <IconButton
                 onClick={handleDiscardChanges}
                 sx={{
-                  color: "#D50000", 
-                  border: "2px solid #D50000", 
+                  color: "#D50000",
+                  border: "2px solid #D50000",
                   borderRadius: "50%",
                   width: 36,
                   height: 36,
@@ -282,12 +294,12 @@ export default function SideNav() {
               >
                 <CloseIcon />
               </IconButton>
-              {/* Save (check) with green circle */}
+              {/* Save changes */}
               <IconButton
                 onClick={handleSaveChanges}
                 sx={{
-                  color: "#48A74C", 
-                  border: "2px solid #48A74C", 
+                  color: "#48A74C",
+                  border: "2px solid #48A74C",
                   borderRadius: "50%",
                   width: 36,
                   height: 36,
@@ -301,17 +313,11 @@ export default function SideNav() {
             </Box>
           )}
         </Box>
-
-        {/* Divider after "Menu" */}
         <Divider sx={{ mb: 2 }} />
-
-        {/* Nav items (either in view mode or edit mode) */}
-        {!editMode ? (
-          <Box>
-            {navItems.map((item) => renderViewModeItem(item))}
-          </Box>
-        ) : (
+        {editMode ? (
           <Box>{renderEditModeTree(navItems, null)}</Box>
+        ) : (
+          <Box>{navItems.map((item) => renderViewModeItem(item))}</Box>
         )}
       </Box>
     </DndProvider>
@@ -341,12 +347,11 @@ function EditNavItem({
 }: EditNavItemProps) {
   const ref = useRef<HTMLDivElement>(null);
 
+  // Reduce opacity if the item is hidden
   const opacity = item.visible === false ? 0.5 : 1;
   const backgroundColor = isTopLevel ? "#F5F5F5" : "transparent";
 
-  const [{ 
-    // isDragging 
-  }, drag] = useDrag({
+  const [{}, drag] = useDrag({
     type: NAV_ITEM_TYPE,
     item: () => ({
       type: NAV_ITEM_TYPE,
@@ -354,21 +359,16 @@ function EditNavItem({
       parentId,
       index,
     }),
-    collect: () => ({
-      // isDragging: monitor.isDragging(),
-    }),
+    collect: () => ({}),
   });
 
   const [{ handlerId }, drop] = useDrop<DragItem, void, { handlerId: Identifier | null }>({
     accept: NAV_ITEM_TYPE,
-    collect: (monitor) => ({
-      handlerId: monitor.getHandlerId(),
-    }),
+    collect: (monitor) => ({ handlerId: monitor.getHandlerId() }),
     hover(dragItem, monitor) {
       if (!ref.current) return;
       const dragIndex = dragItem.index;
       const hoverIndex = index;
-
       if (dragItem.parentId !== parentId) return;
       if (dragIndex === hoverIndex) return;
 
@@ -382,7 +382,6 @@ function EditNavItem({
       if (dragIndex > hoverIndex && hoverClientY > hoverMiddleY) return;
 
       moveItem(parentId, dragIndex, hoverIndex);
-
       dragItem.index = hoverIndex;
     },
   });
@@ -402,13 +401,10 @@ function EditNavItem({
         }}
       >
         <DragIndicatorIcon sx={{ mr: 1, cursor: "grab" }} />
-
         <ListItemText primary={item.title} />
-
         <IconButton onClick={() => handleRename(item.id)}>
           <CreateIcon fontSize="small" />
         </IconButton>
-
         <IconButton onClick={() => handleToggleVisibility(item.id, item.visible === false)}>
           {item.visible === false ? (
             <VisibilityOffIcon fontSize="small" />
@@ -417,8 +413,6 @@ function EditNavItem({
           )}
         </IconButton>
       </Box>
-
-      {/* Render children (indented) if any */}
       {children}
     </Box>
   );

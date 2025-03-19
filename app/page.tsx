@@ -332,12 +332,12 @@ export default function HomePage() {
                 color="success"
               />
             </Box>
-            <SearchBarContainer>
+            {/* <SearchBarContainer>
               <GreenIconWrapper>
                 <SearchIcon sx={{ color: "#FFF", width: "21px", height: "24px" }} />
               </GreenIconWrapper>
               <StyledInputBase placeholder="Search by name, job title..." inputProps={{ "aria-label": "search" }} />
-            </SearchBarContainer>
+            </SearchBarContainer> */}
           </Box>
         )}
 
