@@ -55,7 +55,8 @@ export async function GET() {
     return NextResponse.json(navData);
   } catch (err) {
     // If file doesn't exist or any error occurs, return default navigation data
-    return NextResponse.json(defaultNav);
+    return NextResponse.json(err);
+    // return NextResponse.json(defaultNav);
   }
 }
 

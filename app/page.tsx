@@ -24,7 +24,7 @@ import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
 import LocationOnIcon from "@mui/icons-material/LocationOn";
 import CalendarTodayIcon from "@mui/icons-material/CalendarToday";
 import MenuIcon from "@mui/icons-material/Menu";
-import SearchIcon from "@mui/icons-material/Search";
+// import SearchIcon from "@mui/icons-material/Search";
 
 import SideNav from "@/components/SideNav";
 
@@ -106,38 +106,38 @@ const SortingRow = styled(Box)(({ theme }) => ({
 }));
 
 // ===== Search Bar for Desktop Header =====
-const SearchBarContainer = styled(Box)(({ theme }) => ({
-  display: "flex",
-  alignItems: "center",
-  backgroundColor: "#FFF",
-  borderRadius: 9999,
-  height: "40px",
-  padding: "0 12px",
-  minWidth: "300px",
-  [theme.breakpoints.down("md")]: {
-    minWidth: "220px",
-  },
-  [theme.breakpoints.down("sm")]: {
-    display: "none", // Hide search bar on mobile
-  },
-}));
+// const SearchBarContainer = styled(Box)(({ theme }) => ({
+//   display: "flex",
+//   alignItems: "center",
+//   backgroundColor: "#FFF",
+//   borderRadius: 9999,
+//   height: "40px",
+//   padding: "0 12px",
+//   minWidth: "300px",
+//   [theme.breakpoints.down("md")]: {
+//     minWidth: "220px",
+//   },
+//   [theme.breakpoints.down("sm")]: {
+//     display: "none", // Hide search bar on mobile
+//   },
+// }));
 
-const GreenIconWrapper = styled(Box)({
-  width: "32px",
-  height: "32px",
-  borderRadius: "50%",
-  backgroundColor: "#48A74C",
-  display: "flex",
-  alignItems: "center",
-  justifyContent: "center",
-  marginRight: "8px",
-});
+// const GreenIconWrapper = styled(Box)({
+//   width: "32px",
+//   height: "32px",
+//   borderRadius: "50%",
+//   backgroundColor: "#48A74C",
+//   display: "flex",
+//   alignItems: "center",
+//   justifyContent: "center",
+//   marginRight: "8px",
+// });
 
-const StyledInputBase = styled(InputBase)({
-  flex: 1,
-  fontSize: "14px",
-  color: "#000",
-});
+// const StyledInputBase = styled(InputBase)({
+//   flex: 1,
+//   fontSize: "14px",
+//   color: "#000",
+// });
 
 // ===== Icon + label stack for desktop icons =====
 // const IconLabelStack = styled(Box)(({ theme }) => ({
